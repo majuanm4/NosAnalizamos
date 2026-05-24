@@ -19,7 +19,7 @@ fig.height = 4
 paquetes <- c(
 "tidyverse", "readr", "readxl", "haven", "jsonlite",
 "lubridate", "hms", "ggplot2", "dplyr", "tidyr",
-"GGally", "car", "dbplyr", "RColorBrewer"
+"GGally", "car", "dbplyr", "RColorBrewer", "kableExtra"
 )
 for (p in paquetes) {
 if (!require(p, character.only = TRUE)) {
@@ -51,6 +51,26 @@ limpiar_nota <- function(x) {
 
 datos <- datos %>% mutate(across(all_of(asignaturas), limpiar_nota))
 notas <- datos %>% select(Id, all_of(asignaturas))
+```
+
+
+```{r}
+tabla_estadisticos <- datos %>%
+  select(all_of(asignaturas)) %>%
+  pivot_longer(cols = everything(), names_to = "Asignatura", values_to = "Calificacion") %>%
+  group_by(Asignatura) %>%
+  summarise(
+    Minimo      = min(Calificacion, na.rm = TRUE),
+    Percentil25 = quantile(Calificacion, 0.25, na.rm = TRUE),
+    Mediana     = median(Calificacion, na.rm = TRUE),
+    Media       = mean(Calificacion, na.rm = TRUE),
+    SD          = sd(Calificacion, na.rm = TRUE),
+    Percentil75 = quantile(Calificacion, 0.75, na.rm = TRUE),
+    Maximo      = max(Calificacion, na.rm = TRUE)
+  ) %>%
+  mutate(across(where(is.numeric), ~ round(., 2)))
+
+kable(tabla_estadisticos, caption = "Tabla estadísticas Notas")
 ```
 
 
