@@ -51,6 +51,7 @@ limpiar_nota <- function(x) {
 
 datos <- datos %>% mutate(across(all_of(asignaturas), limpiar_nota))
 notas <- datos %>% select(Id, all_of(asignaturas))
+save(notas, file = "Notas.Rdata")
 ```
 
 
@@ -74,8 +75,7 @@ kable(tabla_estadisticos, caption = "Tabla estadísticas Notas")
 ```
 
 ```{r}
-
-notas_limpias <- datos %>% select(all_of(asignaturas)) %>% drop_na()
+notas_limpias <- notas %>% select(-Id)
 
 ggpairs(notas_limpias, title = "Representación matricial de dispersión y correlación")
 
@@ -89,6 +89,57 @@ kable(matriz_cor_pearson, caption = "Matriz de correlación de Pearson")
 matriz_cor_spearman <- cor(notas_limpias, method = "spearman", use = "complete.obs")
 kable(matriz_cor_spearman, caption = "Matriz de correlación de Spearman")
 
+
+```
+
+
+```{r}
+notas_largo <- datos %>% 
+  select(all_of(asignaturas)) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "Asignatura",
+    values_to = "Calificacion"
+  ) %>%
+  filter(!is.na(Calificacion))
+
+ggplot(notas_largo, aes(x = Asignatura, y = Calificacion)) +
+  geom_boxplot(fill = "lightblue") +
+  theme_minimal() +
+  labs(title = "Boxplot de Calificaciones por Asignatura")
+
+notas_largo_sexo <- datos %>% 
+  select(Sex, all_of(asignaturas)) %>% 
+  mutate(Sex = as.factor(Sex)) %>%
+  pivot_longer(
+    cols = asignaturas,
+    names_to = "Asignatura",
+    values_to = "Calificacion"
+  ) %>%
+  filter(!is.na(Calificacion))
+
+ggplot(notas_largo_sexo, aes(x = Asignatura, y = Calificacion, fill = Sex)) + geom_boxplot()
+
+notas_completas_largo <- notas %>% 
+  drop_na() %>%
+  pivot_longer(
+    asignaturas,
+    names_to = "Asignatura",
+    values_to = "Calificacion"
+  )
+
+ggplot(notas_completas_largo, aes(x = Id, y = Calificacion, col = Asignatura)) + 
+  geom_point() +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  labs(
+    title = "Calificaciones de alumnos con todas las asignaturas completas (2026)",
+    x = "Usuario Alumno (Id)",
+    y = "Calificación Numérica"
+  )
+
+```
+```{r}
 
 ```
 
