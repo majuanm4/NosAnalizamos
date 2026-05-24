@@ -10,7 +10,6 @@ knitr::opts_chunk$set(
 echo = TRUE,
 message = FALSE,
 warning = FALSE,
-33
 error = FALSE,
 fig.align = "center",
 fig.width = 8,
@@ -28,6 +27,30 @@ install.packages(p)
 library(p, character.only = TRUE)
 }
 }
+```
+
+```{r}
+datos <- read_delim("data/NosAutoanalizamos2022 - Hoja1.tsv", skip = 25)
+
+datos <- datos %>% 
+  filter(
+    !is.na(Id) & Id != "" & Id != "martsobm"
+  ) %>%
+  select(-...1)
+
+asignaturas <- c("FP", "ALG", "ANM", "DCS", "MD") # Lista de ejemplo, añade las que correspondan
+
+limpiar_nota <- function(x) {
+  x <- as.character(x)
+  x <- str_trim(x)
+  x <- ifelse(x == "NC", "3", x)
+  # Intentamos convertir a numérico. Los valores como "6 y pico" darán NA automáticamente
+  x_num <- as.numeric(x)
+  return(x_num)
+}
+
+datos <- datos %>% mutate(across(all_of(asignaturas), limpiar_nota))
+notas <- datos %>% select(Id, all_of(asignaturas))
 ```
 
 
