@@ -73,4 +73,26 @@ tabla_estadisticos <- datos %>%
 kable(tabla_estadisticos, caption = "Tabla estadísticas Notas")
 ```
 
+```{r}
+
+notas_limpias <- datos %>% select(all_of(asignaturas)) %>% drop_na()
+
+ggpairs(notas_limpias, title = "Representación matricial de dispersión y correlación")
+
+matriz_cov <- cov(notas_limpias, use = "complete.obs")
+kable(matriz_cov, caption = "Matriz de covarianza")
+
+
+matriz_cor_pearson <- cor(notas_limpias, method = "pearson", use = "complete.obs")
+kable(matriz_cor_pearson, caption = "Matriz de correlación de Pearson")
+
+matriz_cor_spearman <- cor(notas_limpias, method = "spearman", use = "complete.obs")
+kable(matriz_cor_spearman, caption = "Matriz de correlación de Spearman")
+
+
+```
+
+
+
+
 
