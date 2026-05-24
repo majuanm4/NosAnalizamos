@@ -30,13 +30,12 @@ library(p, character.only = TRUE)
 ```
 
 ```{r}
-datos <- read_delim("data/NosAutoanalizamos2022 - Hoja1.tsv", skip = 25)
+datos <- read_delim("data/NosAutoanalizamos2026 - NosAutoanalizamos (1).tsv", skip = 28)
 
 datos <- datos %>% 
   filter(
     !is.na(Id) & Id != "" & Id != "martsobm"
-  ) %>%
-  select(-...1)
+  ) 
 
 asignaturas <- c("FP", "ALG", "ANM", "DCS", "MD") # Lista de ejemplo, añade las que correspondan
 
