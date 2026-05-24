@@ -1,0 +1,33 @@
+---
+title: "Nos Analizamos"
+author: "Mario Juan Moya"
+date: "2026-05-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+echo = TRUE,
+message = FALSE,
+warning = FALSE,
+33
+error = FALSE,
+fig.align = "center",
+fig.width = 8,
+fig.height = 4
+)
+
+paquetes <- c(
+"tidyverse", "readr", "readxl", "haven", "jsonlite",
+"lubridate", "hms", "ggplot2", "dplyr", "tidyr",
+"GGally", "car", "dbplyr", "RColorBrewer"
+)
+for (p in paquetes) {
+if (!require(p, character.only = TRUE)) {
+install.packages(p)
+library(p, character.only = TRUE)
+}
+}
+```
+
+
